@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { invoke } from "@tauri-apps/api/tauri";
 import { open as openDialog } from "@tauri-apps/api/dialog";
 import excelLogo from './assets/excel.svg';
-import { appDataDir } from '@tauri-apps/api/path';
+import { documentDir } from '@tauri-apps/api/path';
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<string>('');
@@ -11,7 +11,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const getAppDataDir = async () => {
-      const path = await appDataDir();
+      const path = await documentDir();
       setAppDataDirPath(path);
     };
     getAppDataDir();
@@ -24,26 +24,29 @@ const App: React.FC = () => {
     }
 
     try {
-      const selected = await openDialog({
+      const selectedPath = await openDialog({
         directory: true,
         multiple: false,
       });
 
-      if (selected === null) {
+      if (selectedPath === null) {
         setStatus('No se seleccionó ninguna carpeta.');
         return;
       }
 
       setStatus('Procesando archivos...');
+      console.log("Seleccionado: ", selectedPath);
 
       const result = await invoke('process_xml_folder', {
-        folder_xml_path: selected as string,
-        app_data_dir_path: appDataDirPath
+        folderXmlPath: selectedPath as string,  // Asegúrate de que este nombre coincida
+        appDataDirPath: appDataDirPath as string  // con el nombre definido en Rust
       });
+
+      console.log("XML procesados");
 
       const parsedResult = JSON.parse(result as string);
 
-      setStatus(`Archivos procesados con exito!`);
+      setStatus(`Archivos procesados con éxito!`);
       setExcelPath(parsedResult.excel_path);
     } catch (error) {
       setStatus(`Error: ${error}`);

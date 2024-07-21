@@ -41,6 +41,7 @@ fn process_xml_file(file_path: &Path) -> Result<Factura, String> {
     let mut factura = Factura::new();
 
     loop {
+        println!("Recoleccion de datos iniciada");
         match reader.read_event() {
             Ok(Event::Empty(e)) | Ok(Event::Start(e)) => match e.name().as_ref() {
                 b"cfdi:Comprobante" => {

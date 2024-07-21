@@ -14,7 +14,7 @@ pub fn process_folder(path: &Path) -> Result<Vec<Factura>, String> {
         let entry = entry.map_err(|e| e.to_string())?;
         let file_path = entry.path();
         if file_path.extension().and_then(|s| s.to_str()) == Some("xml") {
-            match process_xml_file(&file_path) {
+            match process_file(&file_path) {
                 Ok(factura) => {
                     processed_files += 1;
                     total_amount += factura.total;
@@ -33,7 +33,7 @@ pub fn process_folder(path: &Path) -> Result<Vec<Factura>, String> {
     Ok(facturas)
 }
 
-fn process_xml_file(file_path: &Path) -> Result<Factura, String> {
+fn process_file(file_path: &Path) -> Result<Factura, String> {
     let file_content = fs::read_to_string(file_path).map_err(|e| e.to_string())?;
     let mut reader = Reader::from_str(&file_content);
     reader.config_mut().trim_text(true);
@@ -41,7 +41,6 @@ fn process_xml_file(file_path: &Path) -> Result<Factura, String> {
     let mut factura = Factura::new();
 
     loop {
-        println!("Recoleccion de datos iniciada");
         match reader.read_event() {
             Ok(Event::Empty(e)) | Ok(Event::Start(e)) => match e.name().as_ref() {
                 b"cfdi:Comprobante" => {

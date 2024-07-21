@@ -3,98 +3,23 @@
     windows_subsystem = "windows"
 )]
 
-mod excel_generator;
 mod factura;
 mod rfc_clientes;
-mod xml_processor;
+mod utils;
 
-use factura::Factura;
-use serde_json::json;
-use std::path::Path;
-use std::path::PathBuf;
-use std::process::Command;
-use tauri::api::path::{resolve_path, BaseDirectory};
+use crate::utils::file;
+use crate::utils::xml;
 use tauri::Manager;
 
 #[tauri::command]
 async fn abrir_archivo(app: tauri::AppHandle, ruta: String) -> Result<String, String> {
     println!("Intentando abrir archivo: {}", ruta);
-
-    let path = resolve_path(
-        &app.config(),
-        &app.package_info(),
-        &app.env(),
-        &ruta,
-        Some(BaseDirectory::Document),
-    )
-    .map_err(|e| format!("Error al resolver la ruta: {}", e))?;
-
-    if !path.exists() {
-        return Err(format!("El archivo no existe: {}", path.display()));
-    }
-
-    let result = if cfg!(target_os = "windows") {
-        Command::new("cmd")
-            .args(&["/C", "start", "", path.to_str().unwrap()])
-            .output()
-    } else if cfg!(target_os = "macos") {
-        Command::new("open").arg(path.to_str().unwrap()).output()
-    } else {
-        Command::new("xdg-open")
-            .arg(path.to_str().unwrap())
-            .output()
-    };
-
-    match result {
-        Ok(_) => {
-            println!("Archivo abierto exitosamente: {}", path.display());
-            Ok(format!("Archivo abierto: {}", path.display()))
-        }
-        Err(e) => {
-            let error_msg = format!("Error al abrir el archivo {}: {}", path.display(), e);
-            println!("{}", error_msg);
-            Err(error_msg)
-        }
-    }
+    file::abrir_archivo(app, ruta).await
 }
 
 #[tauri::command]
-fn dummy_command() -> String {
-    println!("dummy_command ejecutado");
-    "Tauri is initialized".into()
-}
-
-#[tauri::command]
-async fn process_xml_folder(
-    folder_xml_path: String,
-    app_data_dir_path: String,
-) -> Result<String, String> {
-    println!("process_xml_folder ejecutado");
-    println!("Procesando carpeta: {}", folder_xml_path);
-    println!(
-        "Directorio de datos de la aplicación: {}",
-        app_data_dir_path
-    );
-
-    let path = Path::new(&folder_xml_path);
-    if !path.is_dir() {
-        return Err("La ruta proporcionada no es un directorio".into());
-    }
-
-    println!("Éxito, ruta correcta");
-    let facturas: Vec<Factura> = xml_processor::process_folder(&path)?;
-
-    let excel_file_name = "facturas.xlsx";
-    let excel_path = PathBuf::from(&app_data_dir_path).join(excel_file_name);
-
-    println!("Excel path: {}", excel_path.to_str().unwrap());
-
-    excel_generator::create_excel(&excel_path, &facturas).map_err(|e| e.to_string())?;
-
-    Ok(json!({
-        "excel_path": excel_path.to_str().unwrap()
-    })
-    .to_string())
+async fn main_xml(folder_xml_path: String, app_data_dir_path: String) -> Result<String, String> {
+    xml::process_xml_folder(folder_xml_path, app_data_dir_path).await
 }
 
 fn main() {
@@ -109,11 +34,7 @@ fn main() {
             println!("Tauri inicializado");
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![
-            dummy_command,
-            process_xml_folder,
-            abrir_archivo
-        ])
+        .invoke_handler(tauri::generate_handler![main_xml, abrir_archivo])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

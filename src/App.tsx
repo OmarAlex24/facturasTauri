@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { invoke } from "@tauri-apps/api/tauri";
 import { open as openDialog } from "@tauri-apps/api/dialog";
 import excelLogo from './assets/excel.svg';
+import uploadIcon from './assets/upload.svg'
 import { documentDir } from '@tauri-apps/api/path';
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<string>('');
@@ -37,7 +41,7 @@ const App: React.FC = () => {
       setStatus('Procesando archivos...');
       console.log("Seleccionado: ", selectedPath);
 
-      const result = await invoke('process_xml_folder', {
+      const result = await invoke('main_xml', {
         folderXmlPath: selectedPath as string,  // Asegúrate de que este nombre coincida
         appDataDirPath: appDataDirPath as string  // con el nombre definido en Rust
       });
@@ -62,28 +66,63 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">Factura XML Processor</h1>
-        <button
-          onClick={handleFolderSelect}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Seleccionar Carpeta
-        </button>
-        <div className="mt-4 text-sm">
-          {status}
-        </div>
-        {excelPath && (
-          <div className="mt-4 text-sm text-green-600 flex items-center justify-center">
-            <span>Archivo Excel creado: </span>
-            <button onClick={handleOpenFile} className="ml-2 flex items-center text-blue-500 hover:underline">
-              <img src={excelLogo} alt="Excel Icon" className="w-18 h-18 mr-1" />
-            </button>
+    // <>
+    //   <div className="bg-gray-100 flex flex-col p-14 min-h-screen">
+    //     <h1 className="text-3xl font-bold mb-4">Factura XML Processor</h1>
+    //     <div className="text-center">
+    //       <button
+    //         onClick={handleFolderSelect}
+    //         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    //       >
+    //         Seleccionar Carpeta
+    //       </button>
+    //       <div className="mt-4 text-sm">
+    //         {status}
+    //       </div>
+    //       {excelPath && (
+    //         <div className="mt-4 text-sm text-green-600 flex flex-col items-center justify-center">
+    //           <span>Archivo Excel creado: </span>
+    //           <Button onClick={handleOpenFile} >
+    //             <img src={excelLogo} alt="Excel Icon" className="w-18 h-18 mr-1" />
+    //           </Button>
+    //         </div>
+    //       )}
+    //     </div>
+    //   </div>
+    // </>
+
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold text-blue-700">Factura XML Processor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={handleFolderSelect}
+            className="w-full mb-6 flex gap-3 bg-blue-500 hover:bg-blue-600 text-white">
+            <img src={uploadIcon} alt="upload icon" />
+            Seleccionar Carpeta
+          </Button>
+
+          <div className="text-center mb-6">
+            <p className="text-green-600 font-semibold mb-2">
+              {status}
+            </p>
           </div>
-        )}
-      </div>
+
+          {excelPath && (
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="text-center py-4">
+                <p className="text-green-700 font-medium mb-2">Archivo Excel creado:</p>
+                <button onClick={handleOpenFile} >
+                  <img src={excelLogo} alt="Excel Icon" className="w-18 h-18 mr-1" />
+                </button>
+              </CardContent>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
     </div>
+
   );
 };
 

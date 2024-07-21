@@ -66,30 +66,6 @@ const App: React.FC = () => {
   };
 
   return (
-    // <>
-    //   <div className="bg-gray-100 flex flex-col p-14 min-h-screen">
-    //     <h1 className="text-3xl font-bold mb-4">Factura XML Processor</h1>
-    //     <div className="text-center">
-    //       <button
-    //         onClick={handleFolderSelect}
-    //         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-    //       >
-    //         Seleccionar Carpeta
-    //       </button>
-    //       <div className="mt-4 text-sm">
-    //         {status}
-    //       </div>
-    //       {excelPath && (
-    //         <div className="mt-4 text-sm text-green-600 flex flex-col items-center justify-center">
-    //           <span>Archivo Excel creado: </span>
-    //           <Button onClick={handleOpenFile} >
-    //             <img src={excelLogo} alt="Excel Icon" className="w-18 h-18 mr-1" />
-    //           </Button>
-    //         </div>
-    //       )}
-    //     </div>
-    //   </div>
-    // </>
 
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">

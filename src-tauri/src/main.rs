@@ -20,7 +20,6 @@ use tauri::Manager;
 async fn abrir_archivo(app: tauri::AppHandle, ruta: String) -> Result<String, String> {
     println!("Intentando abrir archivo: {}", ruta);
 
-    // Resolver la ruta del archivo
     let path = resolve_path(
         &app.config(),
         &app.package_info(),
@@ -30,12 +29,10 @@ async fn abrir_archivo(app: tauri::AppHandle, ruta: String) -> Result<String, St
     )
     .map_err(|e| format!("Error al resolver la ruta: {}", e))?;
 
-    // Verificar si el archivo existe
     if !path.exists() {
         return Err(format!("El archivo no existe: {}", path.display()));
     }
 
-    // Intentar abrir el archivo usando el comando adecuado según el sistema operativo
     let result = if cfg!(target_os = "windows") {
         Command::new("cmd")
             .args(&["/C", "start", "", path.to_str().unwrap()])
@@ -63,6 +60,7 @@ async fn abrir_archivo(app: tauri::AppHandle, ruta: String) -> Result<String, St
 
 #[tauri::command]
 fn dummy_command() -> String {
+    println!("dummy_command ejecutado");
     "Tauri is initialized".into()
 }
 
@@ -71,14 +69,21 @@ async fn process_xml_folder(
     folder_xml_path: String,
     app_data_dir_path: String,
 ) -> Result<String, String> {
+    println!("process_xml_folder ejecutado");
+    println!("Procesando carpeta: {}", folder_xml_path);
+    println!(
+        "Directorio de datos de la aplicación: {}",
+        app_data_dir_path
+    );
+
     let path = Path::new(&folder_xml_path);
     if !path.is_dir() {
         return Err("La ruta proporcionada no es un directorio".into());
     }
 
+    println!("Éxito, ruta correcta");
     let facturas: Vec<Factura> = xml_processor::process_folder(&path)?;
 
-    // Crear el archivo Excel
     let excel_file_name = "facturas.xlsx";
     let excel_path = PathBuf::from(&app_data_dir_path).join(excel_file_name);
 
@@ -93,6 +98,7 @@ async fn process_xml_folder(
 }
 
 fn main() {
+    println!("Iniciando Tauri");
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)]
@@ -100,6 +106,7 @@ fn main() {
                 let window = app.get_window("main").unwrap();
                 window.center().unwrap();
             }
+            println!("Tauri inicializado");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

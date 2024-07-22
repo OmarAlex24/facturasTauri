@@ -47,9 +47,18 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
                     for attr in e.attributes() {
                         if let Ok(attr) = attr {
                             match attr.key.as_ref() {
+                                b"SubTotal" => {
+                                    factura.subtotal =
+                                        attr.unescape_value().unwrap().parse().unwrap_or(0.0)
+                                }
                                 b"Total" => {
                                     factura.total =
                                         attr.unescape_value().unwrap().parse().unwrap_or(0.0)
+                                }
+                                b"MetodoPago" => {
+                                    factura.set_metodo_pago(
+                                        &attr.unescape_value().unwrap().into_owned(),
+                                    );
                                 }
                                 b"Fecha" => {
                                     factura.fecha_emision =
@@ -82,6 +91,23 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
                     }
                 }
                 b"cfdi:Receptor" => {
+                    for attr in e.attributes() {
+                        if let Ok(attr) = attr {
+                            match attr.key.as_ref() {
+                                b"Rfc" => {
+                                    factura.rfc_receptor =
+                                        attr.unescape_value().unwrap().into_owned()
+                                }
+                                b"Nombre" => {
+                                    factura.nombre_receptor =
+                                        attr.unescape_value().unwrap().into_owned()
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                }
+                b"cfdi:Impuestos" => {
                     for attr in e.attributes() {
                         if let Ok(attr) = attr {
                             match attr.key.as_ref() {

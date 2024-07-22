@@ -10,6 +10,7 @@ pub struct Factura {
     pub subtotal: f64,
     pub iva: f64,
     pub total: f64,
+    pub metodo_pago: String,
     pub efecto_comprobante: String,
     pub tipo_factura: String,
 }
@@ -26,6 +27,7 @@ impl Factura {
             subtotal: 0.0,
             iva: 0.0,
             total: 0.0,
+            metodo_pago: String::new(),
             efecto_comprobante: String::new(),
             tipo_factura: String::new(),
         }
@@ -37,5 +39,15 @@ impl Factura {
             "Pago" | "P" => "Pago".to_string(),
             _ => "Desconocido".to_string(),
         };
+    }
+    pub fn set_metodo_pago(&mut self, metodo_pago: &str) {
+        self.metodo_pago = match metodo_pago {
+            "PUE" => "Pago una exhibicion".to_string(),
+            "PPD" | "Pago en parcialidades" => "Egreso".to_string(),
+            _ => "Desconocido".to_string(),
+        };
+    }
+    pub fn set_iva(&mut self, total: f64, subtotal: f64) {
+        self.iva = total - subtotal;
     }
 }

@@ -52,5 +52,5 @@ export const useFileProcessing = (docDir: string | null) => {
     }
   };
 
-  return { status, excelPath, processFiles };
+  return { status, excelPath, setExcelPath, processFiles };
 }

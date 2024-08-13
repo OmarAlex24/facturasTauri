@@ -11,7 +11,10 @@ edition = "2021"
 tauri-build = { version = "1.2", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "fs-read-file", "fs-read-dir", "path-all",
+tauri = { version = "1", features = [
+  "fs-read-file",
+  "fs-read-dir",
+  "path-all",
   "dialog-open",
   "shell-open",
 ] }

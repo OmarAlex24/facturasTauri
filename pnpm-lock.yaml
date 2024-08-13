@@ -12,7 +12,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
       '@tauri-apps/api':
-        specifier: ^1
+        specifier: ^1.6.0
         version: 1.6.0
       class-variance-authority:
         specifier: ^0.7.0
@@ -46,7 +46,7 @@ importers:
         version: 0.5.0
     devDependencies:
       '@tauri-apps/cli':
-        specifier: ^1
+        specifier: ^1.6.0
         version: 1.6.0
       '@types/react':
         specifier: ^18.2.15
@@ -59,7 +59,7 @@ importers:
         version: 0.4.14
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.3.1(vite@5.3.3(@types/node@20.14.10))
+        version: 4.3.1(vite@5.3.3(@types/node@22.2.0))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.39)
@@ -74,7 +74,7 @@ importers:
         version: 5.5.3
       vite:
         specifier: ^5.3.1
-        version: 5.3.3(@types/node@20.14.10)
+        version: 5.3.3(@types/node@22.2.0)
 
 packages:
 
@@ -562,6 +562,9 @@ packages:
 
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
+
+  '@types/node@22.2.0':
+    resolution: {integrity: sha512-bm6EG6/pCpkxDf/0gDNDdtDILMOHgaQBVOJGdwsqClnxA3xL6jtMv76rLBc006RVMWbmaf0xbmom4Z/5o2nRkQ==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -1369,6 +1372,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.13.0:
+    resolution: {integrity: sha512-xtFJHudx8S2DSoujjMd1WeWvn7KKWFRESZTMeL1RptAYERu29D6jphMjjY+vn96jvN3kVPDNxU/E13VTaXj6jg==}
+
   unzipper@0.10.14:
     resolution: {integrity: sha512-ti4wZj+0bQTiX2KmKWuwj7lhV+2n//uXEotUmGuQqrbVZSEGFMbI68+c6JCQ8aAmUWYvtHEz2A8K6wXvueR/6g==}
 
@@ -1872,6 +1878,11 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
+  '@types/node@22.2.0':
+    dependencies:
+      undici-types: 6.13.0
+    optional: true
+
   '@types/prop-types@15.7.12': {}
 
   '@types/react-dom@18.3.0':
@@ -1887,14 +1898,14 @@ snapshots:
     dependencies:
       '@types/node': 20.14.10
 
-  '@vitejs/plugin-react@4.3.1(vite@5.3.3(@types/node@20.14.10))':
+  '@vitejs/plugin-react@4.3.1(vite@5.3.3(@types/node@22.2.0))':
     dependencies:
       '@babel/core': 7.24.9
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.24.9)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.24.9)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.3.3(@types/node@20.14.10)
+      vite: 5.3.3(@types/node@22.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -2701,6 +2712,9 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  undici-types@6.13.0:
+    optional: true
+
   unzipper@0.10.14:
     dependencies:
       big-integer: 1.6.52
@@ -2724,13 +2738,13 @@ snapshots:
 
   uuid@8.3.2: {}
 
-  vite@5.3.3(@types/node@20.14.10):
+  vite@5.3.3(@types/node@22.2.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.39
       rollup: 4.18.1
     optionalDependencies:
-      '@types/node': 20.14.10
+      '@types/node': 22.2.0
       fsevents: 2.3.3
 
   which@2.0.2:

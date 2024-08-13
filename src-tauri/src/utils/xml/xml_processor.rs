@@ -58,7 +58,7 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
             _ => (),
         }
 
-        if (factura.es_gasolina) {
+        if factura.es_gasolina {
             factura.set_ieps(factura.subtotal, factura.iva.iva_16)
         }
 

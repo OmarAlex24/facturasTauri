@@ -25,10 +25,10 @@ async fn main_xml(folder_xml_path: String, doc_dir_path: String) -> Result<Strin
 fn main() {
     println!("Iniciando Tauri");
     tauri::Builder::default()
-        .setup(|app| {
+        .setup(|_app| {
             #[cfg(debug_assertions)]
             {
-                let window = app.get_window("main").unwrap();
+                let window = _app.get_window("main").unwrap();
                 window.center().unwrap();
             }
             println!("Tauri inicializado");

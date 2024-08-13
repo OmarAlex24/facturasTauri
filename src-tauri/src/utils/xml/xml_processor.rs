@@ -1,5 +1,6 @@
 use crate::factura::Factura;
 use crate::rfc_clientes::RFC_CLIENTES;
+use crate::utils::processors::{comprobante, conceptos, emisor, receptor, timbre_fiscal};
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
 use std::fs;
@@ -43,95 +44,12 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
     loop {
         match reader.read_event() {
             Ok(Event::Empty(e)) | Ok(Event::Start(e)) => match e.name().as_ref() {
-                b"cfdi:Comprobante" => {
-                    for attr in e.attributes() {
-                        if let Ok(attr) = attr {
-                            match attr.key.as_ref() {
-                                b"SubTotal" => {
-                                    factura.subtotal =
-                                        attr.unescape_value().unwrap().parse().unwrap_or(0.0)
-                                }
-                                b"Total" => {
-                                    factura.total =
-                                        attr.unescape_value().unwrap().parse().unwrap_or(0.0)
-                                }
-                                b"MetodoPago" => {
-                                    factura.set_metodo_pago(
-                                        &attr.unescape_value().unwrap().into_owned(),
-                                    );
-                                }
-                                b"Fecha" => {
-                                    factura.fecha_emision =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                b"TipoDeComprobante" => {
-                                    factura.set_efecto_comprobante(
-                                        &attr.unescape_value().unwrap().into_owned(),
-                                    );
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                }
-                b"cfdi:Emisor" => {
-                    for attr in e.attributes() {
-                        if let Ok(attr) = attr {
-                            match attr.key.as_ref() {
-                                b"Rfc" => {
-                                    factura.rfc_emisor = attr.unescape_value().unwrap().into_owned()
-                                }
-                                b"Nombre" => {
-                                    factura.nombre_emisor =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                }
-                b"cfdi:Receptor" => {
-                    for attr in e.attributes() {
-                        if let Ok(attr) = attr {
-                            match attr.key.as_ref() {
-                                b"Rfc" => {
-                                    factura.rfc_receptor =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                b"Nombre" => {
-                                    factura.nombre_receptor =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                }
-                b"cfdi:Impuestos" => {
-                    for attr in e.attributes() {
-                        if let Ok(attr) = attr {
-                            match attr.key.as_ref() {
-                                b"Rfc" => {
-                                    factura.rfc_receptor =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                b"Nombre" => {
-                                    factura.nombre_receptor =
-                                        attr.unescape_value().unwrap().into_owned()
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                }
+                b"cfdi:Comprobante" => comprobante::process_comprobante(&mut factura, &e),
+                b"cfdi:Emisor" => emisor::process_emisor(&mut factura, &e),
+                b"cfdi:Receptor" => receptor::process_receptor(&mut factura, &e),
+                b"cfdi:Conceptos" => conceptos::process_conceptos(&mut reader, &mut factura)?,
                 b"tfd:TimbreFiscalDigital" => {
-                    for attr in e.attributes() {
-                        if let Ok(attr) = attr {
-                            if attr.key.as_ref() == b"UUID" {
-                                factura.folio_fiscal = attr.unescape_value().unwrap().into_owned();
-                            }
-                        }
-                    }
+                    timbre_fiscal::process_timbre_fiscal(&mut factura, &e)
                 }
                 _ => {}
             },
@@ -140,12 +58,17 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
             _ => (),
         }
 
+        if (factura.es_gasolina) {
+            factura.set_ieps(factura.subtotal, factura.iva.iva_16)
+        }
+
         factura.tipo_factura = if RFC_CLIENTES.contains(&factura.rfc_emisor.as_str()) {
             "Ingreso".to_string()
         } else {
             "Egreso".to_string()
         };
     }
+    factura.print_factura();
 
     Ok(factura)
 }

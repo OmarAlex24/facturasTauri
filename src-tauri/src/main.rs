@@ -7,8 +7,7 @@ mod factura;
 mod rfc_clientes;
 mod utils;
 
-use crate::utils::file;
-use crate::utils::xml;
+use crate::utils::{file, xml};
 use tauri::Manager;
 
 #[tauri::command]

@@ -26,6 +26,7 @@ pub fn create_excel(path: &Path, facturas: &[Factura]) -> Result<(), xlsxwriter:
         "Metodo de pago",
         "Moneda",
         "Descuento",
+        "Forma de pago",
     ];
 
     let headers_egreso = [
@@ -46,6 +47,7 @@ pub fn create_excel(path: &Path, facturas: &[Factura]) -> Result<(), xlsxwriter:
         "Metodo de pago",
         "Moneda",
         "Descuento",
+        "Forma de pago",
     ];
 
     for (col, header) in headers_ingreso.iter().enumerate() {
@@ -77,6 +79,7 @@ pub fn create_excel(path: &Path, facturas: &[Factura]) -> Result<(), xlsxwriter:
             sheet_ingreso.write_string(row_ingreso, 14, &factura.metodo_pago, None)?;
             sheet_ingreso.write_string(row_ingreso, 15, &factura.moneda, None)?;
             sheet_ingreso.write_number(row_ingreso, 16, factura.descuento, None)?;
+            sheet_ingreso.write_string(row_ingreso, 17, &factura.forma_pago, None)?;
             row_ingreso += 1;
         } else if &factura.tipo_factura == "Egreso" {
             sheet_egreso.write_string(row_egreso, 0, &factura.folio_fiscal, None)?;
@@ -96,6 +99,7 @@ pub fn create_excel(path: &Path, facturas: &[Factura]) -> Result<(), xlsxwriter:
             sheet_egreso.write_string(row_egreso, 14, &factura.metodo_pago, None)?;
             sheet_egreso.write_string(row_egreso, 15, &factura.moneda, None)?;
             sheet_egreso.write_number(row_egreso, 16, factura.descuento, None)?;
+            sheet_egreso.write_string(row_egreso, 17, &factura.forma_pago, None)?;
             row_egreso += 1;
         }
     }

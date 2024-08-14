@@ -44,6 +44,7 @@ pub struct Factura {
     pub descuento: f64,
     pub moneda: String,
     pub es_gasolina: bool,
+    pub forma_pago: String,
 }
 
 impl Factura {
@@ -74,6 +75,7 @@ impl Factura {
             descuento: 0.0,
             moneda: String::new(),
             es_gasolina: false,
+            forma_pago: String::new(),
         }
     }
     pub fn set_efecto_comprobante(&mut self, efecto: &str) {
@@ -81,6 +83,35 @@ impl Factura {
             "Ingreso" | "I" => "Ingreso".to_string(),
             "Egreso" | "E" => "Egreso".to_string(),
             "Pago" | "P" => "Pago".to_string(),
+            "Nomina" | "N" => "Nomina".to_string(),
+            _ => "Desconocido".to_string(),
+        };
+    }
+    pub fn set_forma_pago(&mut self, codigo: String) {
+        self.forma_pago = match codigo.as_str() {
+            "01" => "Efectivo".to_string(),
+            "02" => "Cheque nominativo".to_string(),
+            "03" => "Transferencia electrónica de fondos".to_string(),
+            "04" => "Tarjeta de crédito".to_string(),
+            "05" => "Monedero electrónico".to_string(),
+            "06" => "Dinero electrónico".to_string(),
+            "08" => "Vales de despensa".to_string(),
+            "12" => "Dación en pago".to_string(),
+            "13" => "Pago por subrogación".to_string(),
+            "14" => "Pago por consignación".to_string(),
+            "15" => "Condonación".to_string(),
+            "17" => "Compensación".to_string(),
+            "23" => "Novación".to_string(),
+            "24" => "Confusión".to_string(),
+            "25" => "Remisión de deuda".to_string(),
+            "26" => "Prescripción o caducidad".to_string(),
+            "27" => "A satisfacción del acreedor".to_string(),
+            "28" => "Tarjeta de débito".to_string(),
+            "29" => "Tarjeta de servicios".to_string(),
+            "30" => "Aplicación de anticipos".to_string(),
+            "31" => "Intermediario pagos".to_string(),
+            "99" => "Por definir".to_string(),
+            "" => "Desconocido".to_string(),
             _ => "Desconocido".to_string(),
         };
     }
@@ -127,6 +158,7 @@ impl Factura {
         println!("Descuento: {}", self.descuento);
         println!("Moneda: {}", self.moneda);
         println!("Es gasolina: {}", self.es_gasolina);
+        println!("Forma de pago: {}", self.forma_pago);
         println!("-----------------------------------------------")
     }
 }

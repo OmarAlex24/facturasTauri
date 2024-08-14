@@ -8,4 +8,5 @@ pub fn process_emisor(factura: &mut Factura, e: &quick_xml::events::BytesStart) 
             _ => {}
         }
     }
+    println!("Atributos del emisor procesados correctamente");
 }

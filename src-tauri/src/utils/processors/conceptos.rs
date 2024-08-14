@@ -4,11 +4,11 @@ use quick_xml::reader::Reader;
 
 pub fn process_conceptos(reader: &mut Reader<&[u8]>, factura: &mut Factura) -> Result<(), String> {
     let mut buf = Vec::new();
+    println!("Procesando atributos del concepto");
     loop {
         match reader.read_event_into(&mut buf) {
-            Ok(Event::Empty(ref e)) | Ok(Event::Start(ref e))
-                if e.name().as_ref() == b"cfdi:Concepto" =>
-            {
+            Ok(Event::Empty(ref e)) if e.name().as_ref() == b"cfdi:Concepto" => {
+                println!("Tag concepto autoclosing encontrado");
                 for attr in e.attributes().filter_map(Result::ok) {
                     match attr.key.as_ref() {
                         b"ClaveProdServ" => {
@@ -17,14 +17,31 @@ pub fn process_conceptos(reader: &mut Reader<&[u8]>, factura: &mut Factura) -> R
                         _ => {}
                     }
                 }
+            }
+            Ok(Event::Start(ref e)) if e.name().as_ref() == b"cfdi:Concepto" => {
+                println!("Tag concepto encontrado");
+                for attr in e.attributes().filter_map(Result::ok) {
+                    match attr.key.as_ref() {
+                        b"ClaveProdServ" => {
+                            factura.set_es_gasolina(attr.unescape_value().unwrap().into_owned())
+                        }
+                        _ => {}
+                    }
+                }
+                println!("Procesando hijos concepto");
                 process_concepto(reader, factura)?;
             }
-            Ok(Event::End(ref e)) if e.name().as_ref() == b"cfdi:Conceptos" => break,
+            Ok(Event::End(ref e)) if e.name().as_ref() == b"cfdi:Conceptos" => {
+                println!("Tag de cierre de conceptos encontrado");
+                break;
+            }
             Err(e) => return Err(format!("Error al procesar conceptos: {}", e)),
             _ => {}
         }
         buf.clear();
     }
+    println!("Atributos del concepto procesados correctamente");
+
     Ok(())
 }
 
@@ -35,6 +52,7 @@ fn process_concepto(reader: &mut Reader<&[u8]>, factura: &mut Factura) -> Result
             Ok(Event::Empty(ref e)) | Ok(Event::Start(ref e))
                 if e.name().as_ref() == b"cfdi:Impuestos" =>
             {
+                println!("Tag impuestos encontrado");
                 process_impuestos(reader, factura)?;
             }
 

@@ -62,8 +62,8 @@ jobs:
           TAURI_PRIVATE_KEY_PASS: ${{ secrets.TAURI_PRIVATE_KEY_PASS }}
         run: |
           echo "$TAURI_PRIVATE_KEY" > private.key
-          tauri signer sign --password "$TAURI_PRIVATE_KEY_PASS" -k private.key src-tauri/target/release/bundle/*/*.{appimage,dmg,msi,app,deb}
-          tauri signer update --password "$TAURI_PRIVATE_KEY_PASS" -k private.key src-tauri/target/release/bundle/*/*.{appimage,dmg,msi,app,deb}
+          cargo tauri signer sign --password "$TAURI_PRIVATE_KEY_PASS" -k private.key src-tauri/target/release/bundle/*/*.{appimage,dmg,msi,app,deb}
+          cargo tauri signer update --password "$TAURI_PRIVATE_KEY_PASS" -k private.key src-tauri/target/release/bundle/*/*.{appimage,dmg,msi,app,deb}
           rm private.key
 
       - uses: tauri-apps/tauri-action@v0

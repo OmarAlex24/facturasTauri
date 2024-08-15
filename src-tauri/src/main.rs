@@ -3,8 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-mod factura;
 mod rfc_clientes;
+mod types;
 mod utils;
 
 use crate::utils::{file, xml};

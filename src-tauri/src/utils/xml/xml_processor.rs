@@ -1,5 +1,6 @@
-use crate::factura::Factura;
 use crate::rfc_clientes::RFC_CLIENTES;
+use crate::types::complementos::Complemento;
+use crate::types::factura::Factura;
 use crate::utils::processors::{comprobante, conceptos, emisor, receptor, timbre_fiscal};
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
@@ -63,6 +64,8 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
         if factura.es_gasolina {
             factura.set_ieps(factura.subtotal, factura.iva.iva_16)
         }
+
+        factura.set_prod_serv(factura.clave_producto_servicio.clone());
 
         factura.tipo_factura = if RFC_CLIENTES.contains(&factura.rfc_emisor.as_str()) {
             "Ingreso".to_string()

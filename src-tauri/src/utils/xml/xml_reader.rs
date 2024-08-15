@@ -1,7 +1,8 @@
 use serde_json::json;
 use std::path::PathBuf;
 
-use crate::factura::Factura;
+use crate::types::factura::Factura;
+
 use crate::utils::excel;
 use crate::utils::xml;
 

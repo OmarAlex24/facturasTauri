@@ -1,4 +1,4 @@
-use crate::factura::{Factura, Impuesto};
+use crate::types::factura::{Factura, Impuesto};
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
 
@@ -12,6 +12,8 @@ pub fn process_conceptos(reader: &mut Reader<&[u8]>, factura: &mut Factura) -> R
                 for attr in e.attributes().filter_map(Result::ok) {
                     match attr.key.as_ref() {
                         b"ClaveProdServ" => {
+                            factura.clave_producto_servicio =
+                                attr.unescape_value().unwrap().into_owned();
                             factura.set_es_gasolina(attr.unescape_value().unwrap().into_owned())
                         }
                         _ => {}

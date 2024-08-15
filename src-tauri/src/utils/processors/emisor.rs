@@ -1,4 +1,4 @@
-use crate::factura::Factura;
+use crate::types::factura::Factura;
 
 pub fn process_emisor(factura: &mut Factura, e: &quick_xml::events::BytesStart) {
     for attr in e.attributes().filter_map(Result::ok) {

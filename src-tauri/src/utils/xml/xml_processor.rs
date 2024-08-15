@@ -4,24 +4,26 @@ use crate::utils::processors::{comprobante, conceptos, emisor, receptor, timbre_
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-pub fn process_folder(path: &Path) -> Result<Vec<Factura>, String> {
+pub fn process_folder(paths: Vec<PathBuf>) -> Result<Vec<Factura>, String> {
     let mut facturas: Vec<Factura> = Vec::new();
     let mut processed_files = 0;
     let mut total_amount = 0.0;
 
-    for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
-        let entry = entry.map_err(|e| e.to_string())?;
-        let file_path = entry.path();
-        if file_path.extension().and_then(|s| s.to_str()) == Some("xml") {
-            match process_file(&file_path) {
-                Ok(factura) => {
-                    processed_files += 1;
-                    total_amount += factura.total;
-                    facturas.push(factura);
+    for path in paths.iter() {
+        for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
+            let entry = entry.map_err(|e| e.to_string())?;
+            let file_path = entry.path();
+            if file_path.extension().and_then(|s| s.to_str()) == Some("xml") {
+                match process_file(&file_path) {
+                    Ok(factura) => {
+                        processed_files += 1;
+                        total_amount += factura.total;
+                        facturas.push(factura);
+                    }
+                    Err(e) => println!("Error processing file {:?}: {}", file_path, e),
                 }
-                Err(e) => println!("Error processing file {:?}: {}", file_path, e),
             }
         }
     }

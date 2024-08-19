@@ -45,6 +45,8 @@ pub struct Factura {
     pub moneda: String,
     pub es_gasolina: bool,
     pub forma_pago: String,
+    pub uso_cfdi_receptor: String,
+    pub clave_producto_servicio: String,
 }
 
 impl Factura {
@@ -76,6 +78,8 @@ impl Factura {
             moneda: String::new(),
             es_gasolina: false,
             forma_pago: String::new(),
+            uso_cfdi_receptor: String::new(),
+            clave_producto_servicio: String::new(),
         }
     }
     pub fn set_efecto_comprobante(&mut self, efecto: &str) {
@@ -112,6 +116,59 @@ impl Factura {
             "31" => "Intermediario pagos".to_string(),
             "99" => "Por definir".to_string(),
             "" => "Desconocido".to_string(),
+            _ => "Desconocido".to_string(),
+        };
+    }
+
+    pub fn set_uso_cfdi(&mut self, codigo: String) {
+        self.uso_cfdi_receptor = match codigo.as_str() {
+            "G01" => "Adquisición de mercancías".to_string(),
+            "G02" => "Devoluciones, descuentos o bonificaciones".to_string(),
+            "G03" => "Gastos en general".to_string(),
+            "I01" => "Construcciones".to_string(),
+            "I02" => "Mobiliario y equipo de oficina por inversiones".to_string(),
+            "I03" => "Equipo de transporte".to_string(),
+            "I04" => "Equipo de cómputo y accesorios".to_string(),
+            "I05" => "Dados, troqueles, moldes, matrices y herramental".to_string(),
+            "I06" => "Comunicaciones telefónicas".to_string(),
+            "I07" => "Comunicaciones satelitales".to_string(),
+            "I08" => "Otra maquinaria y equipo".to_string(),
+            "D01" => "Honorarios médicos, dentales y gastos hospitalarios".to_string(),
+            "D02" => "Gastos médicos por incapacidad o discapacidad".to_string(),
+            "D03" => "Gastos funerales".to_string(),
+            "D04" => "Donativos".to_string(),
+            "D05" => "Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)".to_string(),
+            "D06" => "Aportaciones voluntarias al SAR".to_string(),
+            "D07" => "Primas por seguros de gastos médicos".to_string(),
+            "D08" => "Gastos de transportación escolar obligatoria".to_string(),
+            "D09" => "Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones".to_string(),
+            "D10" => "Pagos por servicios educativos (colegiaturas)".to_string(),
+            "CP01" => "Pagos".to_string(),
+            "CN01" => "Nómina".to_string(),
+            "S01" => "Sin Efectos Fiscales".to_string(),
+            "" => "Desconocido".to_string(),
+            _ => "Desconocido".to_string(),
+        };
+    }
+    pub fn set_prod_serv(&mut self, codigo: String) {
+        if codigo.len() < 3 {
+            self.clave_producto_servicio = "Desconocido".to_string();
+            return;
+        }
+        self.clave_producto_servicio = match &codigo[0..2] {
+            "10" | "11" | "12" | "13"  => "Materias primas y químicos".to_string(),
+            "14" => "Materiales y productos de papel".to_string(),
+            "15" => "Combustibles".to_string(),
+            "20" | "21" | "23" | "24" | "26" | "27" => "Herramientas y equipos industriales".to_string(),
+            "30" | "31" | "32" | "39" => "Suministros y componentes".to_string(),
+            "22" | "25" | "40" => "Suministros y equipos de construcción, edificaciones y transportes".to_string(),
+            "41" | "42" | "51" => "Productos farmacéuticos, y suministros y equipos de ensayo, de laboratorio y médicos".to_string(),
+            "47" | "48" | "50" => "Suministros y equipos de servicios, limpieza y comida".to_string(),
+            "43" | "44" | "45" | "55" => "Suministros y equipos tecnológicos, de comunicaciones y de negocios".to_string(),
+            "46" => "Suministros y equipos de defensa y seguridad".to_string(),
+            "49" | "52" | "53" | "54" | "56" | "60" => "Suministros y equipos de consumo, domésticos y personales".to_string(),
+            "64" | "70" | "71" | "72" | "73" | "76" | "77" | "78" | "80" | "81" | "82" | "83" | "84" | "85" | "86" | "90" | "91" | "92" | "93" | "94" => "Servicios".to_string(),
+            "95" => "Bienes Inmuebles".to_string(),
             _ => "Desconocido".to_string(),
         };
     }

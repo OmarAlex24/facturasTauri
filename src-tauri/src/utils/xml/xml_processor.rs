@@ -1,5 +1,4 @@
 use crate::rfc_clientes::RFC_CLIENTES;
-use crate::types::complementos::Complemento;
 use crate::types::factura::Factura;
 use crate::utils::processors::{comprobante, conceptos, emisor, receptor, timbre_fiscal};
 use quick_xml::events::Event;

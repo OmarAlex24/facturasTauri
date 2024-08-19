@@ -2,8 +2,6 @@ use std::path::Path;
 use xlsxwriter::Workbook;
 use xlsxwriter::Worksheet;
 
-use crate::types::complementos;
-use crate::types::complementos::Complemento;
 use crate::types::factura::Factura;
 
 pub fn create_excel(path: &Path, facturas: &[Factura]) -> Result<(), xlsxwriter::XlsxError> {

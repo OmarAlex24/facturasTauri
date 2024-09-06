@@ -64,8 +64,6 @@ fn process_file(file_path: &Path) -> Result<Factura, String> {
             factura.set_ieps(factura.subtotal, factura.iva.iva_16)
         }
 
-        factura.set_prod_serv(factura.clave_producto_servicio.clone());
-
         factura.tipo_factura = if RFC_CLIENTES.contains(&factura.rfc_emisor.as_str()) {
             "Ingreso".to_string()
         } else {

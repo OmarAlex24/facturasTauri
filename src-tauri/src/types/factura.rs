@@ -152,9 +152,9 @@ impl Factura {
     }
     pub fn set_prod_serv(&mut self, codigo: String) {
         if codigo.len() < 3 {
-            self.clave_producto_servicio = "Desconocido".to_string();
             return;
         }
+
         self.clave_producto_servicio = match &codigo[0..2] {
             "10" | "11" | "12" | "13"  => "Materias primas y químicos".to_string(),
             "14" => "Materiales y productos de papel".to_string(),
@@ -172,7 +172,6 @@ impl Factura {
             _ => "Desconocido".to_string(),
         };
     }
-
     pub fn set_es_gasolina(&mut self, clave_producto: String) {
         self.es_gasolina = clave_producto.contains("151015");
     }
@@ -216,6 +215,7 @@ impl Factura {
         println!("Moneda: {}", self.moneda);
         println!("Es gasolina: {}", self.es_gasolina);
         println!("Forma de pago: {}", self.forma_pago);
+        println!("Clave producto servicio: {}", self.clave_producto_servicio);
         println!("-----------------------------------------------")
     }
 }
